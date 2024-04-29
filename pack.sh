@@ -7,6 +7,7 @@ RELEASE_UUID=$(uuidgen)
 RELEASE_DIRHASH=$(openssl rand -hex 16)
 
 # Create Folders
+mkdir -p ${RELEASE_DIR}
 mkdir -p ${WORK_DIR}/MANIFEST
 
 echo "Moving DTED files to ${WORK_DIR}"
@@ -28,14 +29,14 @@ FILES=()
 while IFS=  read -r -d $'\0'; do
     FILES+=("$REPLY")
     echo -e "       <Content ignore=\"false\" zipEntry=\"${REPLY#release/}\"/>" >> ${WORK_DIR}/MANIFEST/manifest.xml
-done < <(find release/${RELEASE_DIRHASH}/* -iname "*.dt*" -print0)
+done < <(find ${WORK_DIR}/${RELEASE_DIRHASH}/* -iname "*.dt*" -print0)
 
 echo -e "\t</Contents>\n</MissionPackageManifest>" >> ${WORK_DIR}/MANIFEST/manifest.xml
 
 
 echo 'Packing datapackage:' ${RELEASE_NAME}
 
-rm ${RELEASE_DIR}/${RELEASE_NAME}
+rm -rf ${RELEASE_DIR}/*
 
 cd ./${WORK_DIR}
 zip -9 -r ../${RELEASE_DIR}/${RELEASE_NAME} *
