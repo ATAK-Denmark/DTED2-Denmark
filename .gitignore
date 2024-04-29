@@ -1,0 +1,6 @@
+.env
+.DS_Store
+.secrets
+event.json
+release/
+work/
